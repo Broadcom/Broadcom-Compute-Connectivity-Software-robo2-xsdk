@@ -1,0 +1,73 @@
+#Make.local.53158
+FEATURE_LIST= PTP CINT L3 I2C BCMX BCMX_DIAG MEM_SCAN EDITLINE BCM_SAL_PROFILE CUSTOMER TEST CHASSIS MSTP RCPU CINT
+#FEATURE_LIST=BFD PTP CINT L3 I2C BCMX BCMX_DIAG MEM_SCAN EDITLINE BCM_SAL_PROFILE CUSTOMER TEST MSTP RCPU CINT
+BCM_PTL_SPT = 1
+DEBUG_OPTIMIZE=FALSE
+BCM_53134_A0 = 1
+BCM_53158_A0 = 1
+#BCM_PHY_LIST += EGPHY28
+# workspace:system=53125
+# vxworks66:system=53125       buildDir=systems/vxworks/keystone   cpu=KEYBE
+# linux26wrs-user:system=53125 buildDir=systems/linux/user/keystone-2_6
+# cpu=KEYBE
+# lverify TARGET=linux-iproc-3_6
+
+#Uncomment below line to enable AVS support for Avenger
+#CONFIG_AVS = 1
+
+#CFGFLAGS += -DSAL_THREAD_EXPLICIT_PRIO -DROBODVT
+CFGFLAGS += -DSAL_THREAD_EXPLICIT_PRIO
+CFGFLAGS += -DBCM_53158_A0
+CFGFLAGS += -DBCM_ROBO_SUPPORT
+CFGFLAGS += -DBCM_ROBO2_SUPPORT
+CFGFLAGS += -DBROADCOM_DEBUG
+CFGFLAGS += -DAVENGER_DEBUG
+CFGFLAGS += -DCOUNTER_DEBUG
+CFGFLAGS += -DCONFIG_EXTERNAL_HOST
+CFGFLAGS += -DMANAGED_MODE
+CFGFLAGS += -DINCLUDE_XGXS_TSCE
+
+#Uncomment below line to fix all led while initialization
+#CFGFLAGS += -DCONFIG_LEDMODE_ONINIT
+
+#Uncomment below line and update CPU port number to override default CPU port (port 0) for Avenger
+#CFGFLAGS += -DCBX_PORT_ECPU=8
+
+#comment below line to disable TSN support
+CFGFLAGS += -DCONFIG_TIMESYNC
+
+#comment below line to disable PTP(1588) support
+CFGFLAGS += -DCONFIG_PTP
+#Uncomment below line to enable PTP one step clock, default is two step clock
+#CFGFLAGS += -DCONFIG_ONE_STEP_CLK
+
+#comment below line to disable 802.1as application support.
+#When 802.1as enabled, PTP needs to be present in FEATURE_LIST defined above
+CFGFLAGS += -DINCLUDE_DOT1AS
+
+#comment below line to disable counter thread
+CFGFLAGS += -DCOUNTER_THREAD
+
+#Comment below if section to disable BCM tag. Also BCM tag can be disabled by setting
+#build flag CONFIG_BCM_TAG = 0
+ifneq ($(CONFIG_BCM_TAG),0)
+    CFLAGS += -DCONFIG_BCM_TAG
+endif
+
+
+#Invoke make with build flag CONFIG_CASCADED = 1 to enable cascading mode for Avenger
+ifeq ($(CONFIG_CASCADED),1)
+    $(info **** Building with CASCADE Configuration ****)
+    CFGFLAGS += -DCONFIG_CASCADED_MODE
+    ifneq ($(CONFIG_CPM_BITMAP),)
+        CFGFLAGS += -DCONFIG_CPM_BITMAP=$(CONFIG_CPM_BITMAP)
+        CFGFLAGS += -DCONFIG_CASCADE_MASTER_BITMAP
+    else ifneq ($(OS),linux)
+        $(warning CONFIG_CPM_BITMAP: No explicit cascade port on Master)
+    endif
+    ifneq ($(CONFIG_CPS_BITMAP),)
+        CFGFLAGS += -DCONFIG_CPS_BITMAP=$(CONFIG_CPS_BITMAP)
+    else ifneq ($(OS),linux)
+        $(warning CONFIG_CPS_BITMAP: No explicit cascade port on Slave)
+    endif
+endif

@@ -1,0 +1,10 @@
+# $Id: BCM953022K.bcm,v 1.2 Broadcom SDK $
+# 
+# This license is set out in https://github.com/Broadcom/Broadcom-Compute-Connectivity-Software-robo2-xsdk/master/Legal/LICENSE file.
+#
+# $Copyright: (c) 2020 Broadcom Inc.
+# Broadcom Proprietary and Confidential. All rights reserved.$
+
+pbmp_valid.0=0x00000103
+phy_port_primary_and_offset_ge0=0x0000
+phy_port_primary_and_offset_ge1=0x0001
